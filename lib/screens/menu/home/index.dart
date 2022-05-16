@@ -1,0 +1,1 @@
+export 'infor_account_screen.dart';
