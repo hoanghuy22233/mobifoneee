@@ -19,7 +19,7 @@ class _AddMoneyState extends State<AddMoney>{
   List<ButtonMenuModel> listCode =[];
 
   final TextEditingController _phoneController = TextEditingController();
-  final TextEditingController _codeController = TextEditingController();
+  TextEditingController _codeController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -63,8 +63,7 @@ class _AddMoneyState extends State<AddMoney>{
                     AppValue.vSpaceTiny,
                     Text('Số tiền',style: AppStyle.DEFAULT_16,),
                     _buildTextForm(
-                        controller: _codeController,
-                      // initialValue: 'aaaaa',
+                      controller: _codeController,
                       enabled: false,
                     ),
                     AppValue.vSpaceSmall,
@@ -86,7 +85,7 @@ class _AddMoneyState extends State<AddMoney>{
                                 print({listCode[index].money});
                               }
                               setState((){
-                                _codeController.addListener(() {listCode[index].money;});
+                                _codeController.text = listCode[index].money;
                               }
                               );
                             },

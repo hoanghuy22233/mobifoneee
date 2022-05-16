@@ -99,7 +99,7 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       theme: ThemeData(fontFamily: 'NunitoSans'),
       title: MESSAGES.APP_TITLE,
-      initialRoute: ROUTE_NAMES.SPLASH,
+      initialRoute: ROUTE_NAMES.ADD_MONEY,
       getPages: [
         GetPage(
           name: ROUTE_NAMES.MAIN,
