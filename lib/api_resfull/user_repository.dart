@@ -12,6 +12,7 @@ class UserRepository {
   final _controller = StreamController<AuthenticationStatus>();
   final _controllerUser = StreamController<InfoUser>();
   UserRepository(){
+    print('Token : ${shareLocal.getString(PreferencesKey.TOKEN)}');
     statusUser.listen((event) {
       if(event.token == dotenv.env[PreferencesKey.TOKEN]!){
         dio = DioProvider.instance();

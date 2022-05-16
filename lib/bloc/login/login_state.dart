@@ -9,7 +9,7 @@ class LoginState extends Equatable {
   final String message;
   final LoginData user;
 
-  LoginState({required this.email, required this.password, required this.status, required this.message, required this.user});
+  const LoginState({required this.email, required this.password, required this.status, required this.message, required this.user});
 
   LoginState copyWith({
     UserName? email,

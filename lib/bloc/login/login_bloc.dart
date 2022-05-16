@@ -21,7 +21,7 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
   final EventRepositoryStorage localRepository;
 
   LoginBloc({required this.userRepository, required this.localRepository})
-      : super( LoginState(email: UserName.pure(), password: Password.pure(), status: FormzStatus.invalid, message: '', user: LoginData()));
+      : super( const LoginState(email: UserName.pure(), password: Password.pure(), status: FormzStatus.invalid, message: '', user: LoginData()));
 
   @override
   void onTransition(Transition<LoginEvent, LoginState> transition) {
@@ -58,16 +58,16 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
     } else if (event is FormSubmitted) {
       try{
         if (state.status.isValidated) {
-          print('aaaaa');
           yield state.copyWith(status: FormzStatus.submissionInProgress);
           var response = await userRepository.loginApp(email: state.email.value, password: state.password.value);
           if (response.status == BASE_URL.SUCCESS_200) {
+            print('aaaaa');
             await localRepository.saveUser(jsonEncode(response));
             await shareLocal.putString(PreferencesKey.TOKEN, response.token!);
             await shareLocal.putBools(PreferencesKey.FIRST_TIME, true);
             await shareLocal.putString(dotenv.env[PreferencesKey.TOKEN]!, response.token!);
             DioProvider.instance(token: response.token!);
-            yield state.copyWith(status: FormzStatus.submissionSuccess, message: response.message??'', user: response.data!);
+            yield state.copyWith(status: FormzStatus.submissionSuccess, message: response.message??'aaaaaa', user: response.data);
             // Future.delayed(Duration(milliseconds: 500), () async* {
             //   yield SaveUserState(response.data!);
             // });
