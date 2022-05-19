@@ -26,14 +26,16 @@ class LoginData {
 }
 
 @JsonSerializable()
-class LoginResponse extends BaseResponse {
+class LoginResponse {
   final LoginData? data;
+  final int? status;
+  final String? message;
   final String? token;
   @JsonKey(name: "token_type")
   final String ?tokenType;
 
 
-  LoginResponse(this.data,this.tokenType,this.token);
+  LoginResponse(this.message,this.status,this.data,this.tokenType,this.token);
 
   factory LoginResponse.fromJson(Map<String, dynamic> json) => _$LoginResponseFromJson(json);
 

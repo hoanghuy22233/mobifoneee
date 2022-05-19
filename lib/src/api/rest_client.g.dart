@@ -150,6 +150,54 @@ class _RestClient implements RestClient {
   }
 
   @override
+  Future<MainResponse> getMainData() async {
+    const _extra = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{};
+    final _headers = <String, dynamic>{};
+    final _data = <String, dynamic>{};
+    final _result = await _dio.fetch<Map<String, dynamic>>(
+        _setStreamType<MainResponse>(
+            Options(method: 'GET', headers: _headers, extra: _extra)
+                .compose(_dio.options, 'api/home',
+                    queryParameters: queryParameters, data: _data)
+                .copyWith(baseUrl: baseUrl ?? _dio.options.baseUrl)));
+    final value = MainResponse.fromJson(_result.data!);
+    return value;
+  }
+
+  @override
+  Future<DataListResponse> getListData() async {
+    const _extra = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{};
+    final _headers = <String, dynamic>{};
+    final _data = <String, dynamic>{};
+    final _result = await _dio.fetch<Map<String, dynamic>>(
+        _setStreamType<DataListResponse>(
+            Options(method: 'GET', headers: _headers, extra: _extra)
+                .compose(_dio.options, 'api/get-data-by-category',
+                    queryParameters: queryParameters, data: _data)
+                .copyWith(baseUrl: baseUrl ?? _dio.options.baseUrl)));
+    final value = DataListResponse.fromJson(_result.data!);
+    return value;
+  }
+
+  @override
+  Future<SearchResponse> getSearch(search) async {
+    const _extra = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{r'search': search};
+    final _headers = <String, dynamic>{};
+    final _data = <String, dynamic>{};
+    final _result = await _dio.fetch<Map<String, dynamic>>(
+        _setStreamType<SearchResponse>(
+            Options(method: 'GET', headers: _headers, extra: _extra)
+                .compose(_dio.options, 'api/search-data',
+                    queryParameters: queryParameters, data: _data)
+                .copyWith(baseUrl: baseUrl ?? _dio.options.baseUrl)));
+    final value = SearchResponse.fromJson(_result.data!);
+    return value;
+  }
+
+  @override
   Future<LoginResponse> loginApp(loginAppRequest) async {
     const _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
@@ -167,19 +215,36 @@ class _RestClient implements RestClient {
   }
 
   @override
-  Future<ResponseStatus> registerApp(registerAppRequest) async {
+  Future<RegisterResponse> registerApp(registerAppRequest) async {
     const _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
     final _headers = <String, dynamic>{};
     final _data = <String, dynamic>{};
     _data.addAll(registerAppRequest.toJson());
     final _result = await _dio.fetch<Map<String, dynamic>>(
-        _setStreamType<ResponseStatus>(
+        _setStreamType<RegisterResponse>(
             Options(method: 'POST', headers: _headers, extra: _extra)
-                .compose(_dio.options, 'api/user/register-user',
+                .compose(_dio.options, 'api/register',
                     queryParameters: queryParameters, data: _data)
                 .copyWith(baseUrl: baseUrl ?? _dio.options.baseUrl)));
-    final value = ResponseStatus.fromJson(_result.data!);
+    final value = RegisterResponse.fromJson(_result.data!);
+    return value;
+  }
+
+  @override
+  Future<ChangeInfo> changeInfo(paramChangeInfo) async {
+    const _extra = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{};
+    final _headers = <String, dynamic>{};
+    final _data = <String, dynamic>{};
+    _data.addAll(paramChangeInfo.toJson());
+    final _result = await _dio.fetch<Map<String, dynamic>>(
+        _setStreamType<ChangeInfo>(
+            Options(method: 'POST', headers: _headers, extra: _extra)
+                .compose(_dio.options, 'api/user/update',
+                    queryParameters: queryParameters, data: _data)
+                .copyWith(baseUrl: baseUrl ?? _dio.options.baseUrl)));
+    final value = ChangeInfo.fromJson(_result.data!);
     return value;
   }
 

@@ -58,10 +58,10 @@ class _LogoAppState extends State<SplashPage> with SingleTickerProviderStateMixi
         listener: (context, state) async {
           var firstTime = await shareLocal.getBools(PreferencesKey.FIRST_TIME);
           print('asda: $firstTime');
-          if(firstTime == false || firstTime == null)
+          // if(firstTime == false || firstTime == null)
             _timer = new Timer(const Duration(seconds: 1), () => AppNavigator.navigateLogin());
-          else
-            _timer = new Timer(const Duration(seconds: 1), () => AppNavigator.navigateMain());
+          // else
+          //   _timer = new Timer(const Duration(seconds: 1), () => AppNavigator.navigateMain());
         },
         child: Scaffold(
           body: AnimatedLogo(animation: animation)

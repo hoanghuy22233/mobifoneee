@@ -21,6 +21,7 @@ class WidgetInput extends StatefulWidget {
   final CrossAxisAlignment? crossAxisAlignment;
   final TextInputAction? textInputAction;
   final BoxDecoration? boxDecoration;
+  final Function? onEditingComplete;
   const WidgetInput(
       {Key? key,
       this.focusNode,
@@ -42,7 +43,7 @@ class WidgetInput extends StatefulWidget {
       this.leadIcon,
       this.endIcon,
       this.enabled = true,
-      this.boxDecoration, this.style,
+      this.boxDecoration, this.style, this.onEditingComplete,
       })
       : super(key: key);
 
@@ -71,6 +72,9 @@ class _WidgetInputState extends State<WidgetInput> {
                 key: widget.key,
                 controller: widget.inputController,
                 onChanged: (change) => widget.onChanged!(change),
+                onEditingComplete: (){
+                  widget.onEditingComplete!();
+                },
                 enabled: widget.enabled,
                 validator: widget.validator,
                 style:widget.style ?? AppStyle.DEFAULT_14,

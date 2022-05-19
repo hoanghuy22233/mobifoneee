@@ -5,15 +5,20 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:get/get.dart';
+import 'package:mobifone/bloc/search/search_bloc.dart';
 import 'package:mobifone/screens/forgot_password/forgot_password_otp_screen.dart';
 import 'package:mobifone/screens/menu/utilities/search/search.dart';
 import 'package:mobifone/screens/screens.dart';
 import 'package:mobifone/src/base.dart';
 import 'package:mobifone/src/messages.dart';
+import 'package:mobifone/src/models/model_generator/main_response.dart';
 import 'package:mobifone/src/router.dart';
 import 'package:mobifone/storages/storages.dart';
 import 'api_resfull/api.dart';
 import 'bloc/blocs.dart';
+import 'bloc/change_info/info_change_bloc.dart';
+import 'bloc/list_data/list_data_bloc.dart';
+import 'bloc/main/main_bloc.dart';
 
 Future main() async {
   Bloc.observer = SimpleBlocObserver();
@@ -70,6 +75,11 @@ Future main() async {
               userRepository: userRepository,
             ),
           ),
+          BlocProvider<MainResponseBloc>(
+            create: (context) => MainResponseBloc(
+              userRepository: userRepository,
+            ),
+          ),
           BlocProvider<InfoUserBloc>(
             create: (context) => InfoUserBloc(
                 userRepository: userRepository,
@@ -82,7 +92,21 @@ Future main() async {
                 userRepository: userRepository
             ),
           ),
-
+          BlocProvider<ListDataBloc>(
+            create: (context) => ListDataBloc(
+                userRepository: userRepository
+            ),
+          ),
+          BlocProvider<SearchBloc>(
+            create: (context) => SearchBloc(
+                userRepository: userRepository
+            ),
+          ),
+          BlocProvider<InfoChangeBloc>(
+            create: (context) => InfoChangeBloc(
+                userRepository: userRepository
+            ),
+          ),
         ],
         child: const MyApp(),
       ),

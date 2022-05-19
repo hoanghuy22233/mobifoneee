@@ -4,6 +4,12 @@ import 'package:dio/dio.dart';
 import 'package:retrofit/retrofit.dart';
 import 'package:mobifone/src/base.dart';
 import 'package:mobifone/src/models/index.dart';
+
+import '../models/model_generator/change_info.dart';
+import '../models/model_generator/list_data.dart';
+import '../models/model_generator/main_response.dart';
+import '../models/model_generator/register.dart';
+import '../models/model_generator/search.dart';
 part 'rest_client.g.dart';
 
 @RestApi(baseUrl: "https://onthicongchuc.net/")
@@ -38,12 +44,24 @@ abstract class RestClient {
   @GET(BASE_URL.DETAIL_COURSE)
   Future<DetailCoursesResponse> getDetailCourse(@Query('id') int id);
 
+  @GET(BASE_URL.MAIN_DATA)
+  Future<MainResponse> getMainData();
+
+  @GET(BASE_URL.LIST_DATA)
+  Future<DataListResponse> getListData();
+
+  @GET(BASE_URL.SEARCH)
+  Future<SearchResponse> getSearch(@Query('search') String search);
+
   // =================================> POST <==================================
   @POST(BASE_URL.LOGIN)
   Future<LoginResponse> loginApp(@Body() LoginAppRequest loginAppRequest);
 
   @POST(BASE_URL.REGISTER)
-  Future<ResponseStatus> registerApp(@Body() RegisterAppRequest registerAppRequest);
+  Future<RegisterResponse> registerApp(@Body() RegisterAppRequest registerAppRequest);
+
+  @POST(BASE_URL.CHANGE_INFO)
+  Future<ChangeInfo> changeInfo(@Body() ParamChangeInfo paramChangeInfo);
 
   @POST(BASE_URL.CHANGE_PASSWORD)
   Future<ResponseStatus> changePassword(@Body() ParamChangePassword paramChangePassword);

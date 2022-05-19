@@ -6,17 +6,6 @@ abstract class RegisterEvent extends Equatable {
   List<Object> get props => [];
 }
 
-class FullNameRegisterChanged extends RegisterEvent {
-  const FullNameRegisterChanged({required this.fullName});
-
-  final String fullName;
-
-  @override
-  List<Object> get props => [fullName];
-}
-
-class FullNameRegisterUnfocused extends RegisterEvent {}
-
 class PhoneRegisterChanged extends RegisterEvent {
   const PhoneRegisterChanged({required this.phone});
 
@@ -40,7 +29,7 @@ class EmailRegisterChanged extends RegisterEvent {
 class EmailRegisterUnfocused extends RegisterEvent {}
 
 class PasswordRegisterChanged extends RegisterEvent {
-  const PasswordRegisterChanged({required this.password});
+  const PasswordRegisterChanged({required this.password,});
 
   final String password;
 
@@ -48,18 +37,23 @@ class PasswordRegisterChanged extends RegisterEvent {
   List<Object> get props => [password];
 }
 
-class PasswordRegisterUnfocused extends RegisterEvent {}
+class ConfirmPasswordRegisterChanged extends RegisterEvent {
+  const ConfirmPasswordRegisterChanged({required this.passwordCF});
 
-class ForgotPasswordRegisterChanged extends RegisterEvent {
-  const ForgotPasswordRegisterChanged({required this.forgotPassword});
-
-  final String forgotPassword;
+  final String passwordCF;
 
   @override
-  List<Object> get props => [forgotPassword];
+  List<Object> get props => [passwordCF];
 }
 
-class ForgotPasswordRegisterUnfocused extends RegisterEvent {}
+class PasswordRegisterUnfocused extends RegisterEvent {}
 
+class ConfirmPasswordRegisterUnfocused extends RegisterEvent {}
 
-class RegisterFormSubmitted extends RegisterEvent {}
+class RegisterFormSubmitted extends RegisterEvent {
+  // final String? referral;
+
+  RegisterFormSubmitted(
+      // this.referral
+      );
+}

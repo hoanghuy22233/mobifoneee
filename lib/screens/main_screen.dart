@@ -1,16 +1,20 @@
+import 'dart:convert';
+
 import 'package:card_swiper/card_swiper.dart';
 import 'package:double_back_to_close_app/double_back_to_close_app.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:mobifone/models/index.dart';
 import 'package:mobifone/screens/screens.dart';
+import 'package:mobifone/screens/widget_body_main_screen.dart';
+import 'package:mobifone/src/models/model_generator/main_response.dart';
 import 'package:mobifone/src/src_index.dart';
 import 'package:mobifone/widgets/widget_appbar.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:mobifone/widgets/widget_button.dart';
 import 'package:mobifone/widgets/widget_line.dart';
+import 'package:mobifone/widgets/widgets.dart';
 
-import '../widgets/widget_dialog.dart';
+import '../storages/share_local.dart';
 import 'menu/menu_left/main_menu.dart';
 
 class MainScreen extends StatefulWidget {
@@ -20,6 +24,24 @@ class MainScreen extends StatefulWidget {
 }
 class _MainScreenState extends State<MainScreen>{
   GlobalKey<ScaffoldState> _drawerKey = GlobalKey();
+
+  late LoginData? data;
+
+  @override
+  void initState() {
+    loadUser();
+    super.initState();
+  }
+
+  loadUser()async{
+    final response = await shareLocal.getString(PreferencesKey.USER);
+    if(response!=null)
+    {
+      setState(() {
+        data=LoginData.fromJson(jsonDecode(response)['data']);
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -56,201 +78,12 @@ class _MainScreenState extends State<MainScreen>{
         elevation: 0,
         title: Column(
           children: [
-            Text('Nguyễn Hoàng Huy',style: AppStyle.DEFAULT_16_BOLD.copyWith(color: COLORS.WHITE),),
-            Text('0123456789',style: AppStyle.DEFAULT_14.copyWith(color: COLORS.WHITE),)
+            WidgetText(title:data!.fullname??'',style: AppStyle.DEFAULT_16_BOLD.copyWith(color: COLORS.WHITE),),
+            WidgetText(title:data!.phone??'',style: AppStyle.DEFAULT_14.copyWith(color: COLORS.WHITE),)
               ]
         ),
       ),
-      body: SingleChildScrollView(
-        child: Column(
-          children: [
-            Container(
-              height: AppValue.heights*0.25,
-              padding: EdgeInsets.symmetric(horizontal: 15,vertical: 10),
-              color: COLORS.PRIMARY_COLOR,
-              child: Column(
-                children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text('Tài khoản chính',style: AppStyle.DEFAULT_14.copyWith(color: COLORS.WHITE),),
-                      InkWell(
-                        onTap: (){AppNavigator.navigateAccount();},
-                          child: Text('Chi tiết >',style: AppStyle.DEFAULT_14.copyWith(color: COLORS.WHITE),)),
-                    ],
-                  ),
-                  AppValue.vSpaceTiny,
-                  Text('500.000đ',style: AppStyle.DEFAULT_30_BOLD.copyWith(color: COLORS.WHITE),),
-                  AppValue.vSpaceSmall,
-                  Container(
-                    height: AppValue.heights*0.1,
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(10)
-                    ),
-                    padding: EdgeInsets.only(left: 20,right: 20,top: 15),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        GestureDetector(
-                          onTap: (){AppNavigator.navigateAddMoney();},
-                          child: Column(
-                            children: [
-                              Image.asset('assets/icons/naptien.png'),
-                              AppValue.vSpaceTiny,
-                              Text('Nạp tiền',style: AppStyle.DEFAULT_14_BOLD,)
-                            ],
-                          ),
-                        ),
-                        GestureDetector(
-                          onTap: (){
-                            AppNavigator.navigateCheckData();
-                          },
-                          child: Column(
-                            children: [
-                              Image.asset('assets/icons/tracuoc.png'),
-                              AppValue.vSpaceTiny,
-                              Text('Tra cước',style: AppStyle.DEFAULT_14_BOLD)
-                            ],
-                          ),
-                        ),
-                        GestureDetector(
-                          onTap: (){AppNavigator.navigateTransferMoney();},
-                          child: Column(
-                            children: [
-                              Image.asset('assets/icons/chuyentien.png'),
-                              AppValue.vSpaceTiny,
-                              Text('Chuyển tiền',style: AppStyle.DEFAULT_14_BOLD)
-                            ],
-                          ),
-                        )
-                      ],
-                    ),
-                  )
-                ],
-              ),
-            ),
-            AppValue.vSpaceSmall,
-            Container(
-              height: Get.height * 0.18,
-              child:
-              // BlocBuilder<ListDocumentsBloc, ListDocumentsState>(
-              //   builder: (context, state) {
-              //     if (state is UpdateListDocuments) {
-              //       return GestureDetector(
-              //         onTap: ()=> AppNavigator.navigateDetailDocument(state.listDocumentsData),
-              //         child:
-              Swiper(
-                itemBuilder: (BuildContext context, int index) {
-                  // return itemDocument(data: state.listDocumentsData[index]);
-                  return SizedBox(
-                    child: Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 20),
-                      child: ClipRRect(
-                          borderRadius: BorderRadius.circular(10.0),
-                          child: Image.asset("assets/images/img-1.png", height: MediaQuery.of(context).size.height*0.2, width: MediaQuery.of(context).size.width,fit: BoxFit.fill,)
-                        // WidgetCachedImage(
-                        //   url: "",
-                        //   fit: BoxFit.cover,
-                        // ),
-                      ),),);},
-                autoplay: true,
-                autoplayDelay: 5000,
-                itemCount: 5,
-                indicatorLayout: PageIndicatorLayout.COLOR,
-                pagination: const SwiperPagination(
-                    alignment: Alignment.bottomCenter,
-                    builder: DotSwiperPaginationBuilder(
-                      color: Colors.grey,
-                      activeColor: COLORS.PRIMARY_COLOR,
-                    )),
-              ),
-              // );
-              // } else {
-              //   return TrailLoading();
-              // }
-              // },
-              // ),
-            ),
-            AppValue.vSpaceSmall,
-            Padding(
-              padding: EdgeInsets.symmetric(horizontal: 15),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text('Thông tin data',style: AppStyle.DEFAULT_18_BOLD,),
-                  AppValue.vSpaceTiny,
-                  _infoData(),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text('Thông tin data',style: AppStyle.DEFAULT_18_BOLD,),
-                      InkWell(
-                        onTap: (){AppNavigator.navigateData();},
-                          child: Text('Xem thêm >',style: AppStyle.DEFAULT_14,))
-                    ],
-                  ),
-                  AppValue.vSpaceTiny,
-                  Container(
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(10),color: Colors.white,
-                    ),
-                    child: ListView.separated(
-                      itemCount: 4,
-                        shrinkWrap: true,
-                        separatorBuilder: (context,index){return  WidgetLine();},
-                        physics: NeverScrollableScrollPhysics(),
-                        itemBuilder: (context, index) {
-                      return  _goiCuoc();
-                    }),
-                  ),
-                  AppValue.vSpaceSmall,
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text('Dịch vụ',style: AppStyle.DEFAULT_18_BOLD,),
-                      InkWell(
-                        onTap: (){AppNavigator.navigateService();},
-                          child: Text('Xem thêm >',style: AppStyle.DEFAULT_14,))
-                    ],
-                  ),
-                  AppValue.vSpaceTiny,
-                  Container(
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(10),color: Colors.white,
-                    ),
-                    child: GridView.builder(
-                      shrinkWrap: true,
-                      itemCount: 8,
-                      physics: NeverScrollableScrollPhysics(),
-                      padding: EdgeInsets.only(left: 12,right: 12,top: 10),
-                      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                        crossAxisCount: 4,
-                        mainAxisSpacing: 10,
-                        crossAxisSpacing: 10,
-                      ),
-                      itemBuilder: (context, index) {
-                        return GestureDetector(
-                          onTap: (){
-                            AppNavigator.navigateDetailService();
-                          },
-                          child: Column(
-                            children: [
-                              Image.asset('assets/images/cliptv.png'),
-                              Text('ClipTV')
-                            ],
-                          ),
-                        );
-                      },
-                    ),
-                  ),
-                  AppValue.vSpaceMedium,
-                ],
-              )
-            ),
-          ],
-        ),
-      ),
+      body: WidgetBodyMainScreen(),
     );
   }
   _goiCuoc(){

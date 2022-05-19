@@ -41,13 +41,13 @@ class AuthenticationBloc
     } else if (event is AuthenticationStatusChanged) {
       yield* _mapAuthenticationStatusChangedToState(event);
     } else if (event is AuthenticationLogoutRequested) {
-      AppNavigator.navigateLogout();
       await _localRepository.saveUser(dotenv.env[PreferencesKey.TOKEN]!);
       await shareLocal.putString(PreferencesKey.TOKEN, '');
       await shareLocal.putString(PreferencesKey.USER_CODE, '');
       await shareLocal.putString(PreferencesKey.USER_EMAIL, '');
       await _localRepository.saveUserID("");
       _userRepository.logOut();
+      AppNavigator.navigateLogout();
     }
   }
 
@@ -66,14 +66,15 @@ class AuthenticationBloc
     try{
       final response = await _localRepository.loadUser();
       if (response != dotenv.env[PreferencesKey.TOKEN]!) {
-        _userRepository.addUser(InfoUser.fromJson(json.decode(response)["payload"]));
+        _userRepository.addUser(LoginResponse.fromJson(json.decode(response)));
         yield AuthenticationState.authenticated();
       } else {
-        _userRepository.addUser(InfoUser(token: dotenv.env[PreferencesKey.TOKEN]!));
+        // _userRepository.addUser(LoginResponse(token: dotenv.env[PreferencesKey.TOKEN]!));
         yield AuthenticationState.unauthenticated();
       }
     }catch(e){
       throw e;
+      yield AuthenticationState.authenticated();
     }
   }
   static AuthenticationBloc of(BuildContext context) => BlocProvider.of<AuthenticationBloc>(context);

@@ -35,6 +35,7 @@ class _WidgetLoginFormState extends State<WidgetLoginForm> {
         context.read<LoginBloc>().add(PasswordUnfocused());
       }
     });
+
   }
 
   @override

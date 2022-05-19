@@ -42,7 +42,7 @@ class InfoUserBloc extends Bloc<InfoUserEvent, InfoUserState>{
   Stream<InfoUserState> _mapInfoUserState() async* {
     try {
       final loadUser = await this._localRepository.loadUser();
-      userRepository.addUser(InfoUser.fromJson(json.decode(loadUser)));
+      userRepository.addUser(LoginResponse.fromJson(json.decode(loadUser)));
     } catch (e) {
       throw e;
     }

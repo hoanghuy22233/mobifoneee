@@ -4,7 +4,11 @@ class BASE_URL {
 
   static const GET_INFO_USER = 'api/user/profile';
   static const LOGIN = 'api/login';
-  static const REGISTER = 'api/user/register-user';
+  static const MAIN_DATA = 'api/home';
+  static const CHANGE_INFO = 'api/user/update';
+  static const LIST_DATA = 'api/get-data-by-category';
+  static const REGISTER = 'api/register';
+  static const SEARCH = 'api/search-data';
   static const PROFILE = 'api/user/profile';
   static const EDIT_PROFILE = 'api/user/update-info-user';
   static const CHANGE_PASSWORD = 'api/user/change-password';

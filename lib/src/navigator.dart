@@ -24,7 +24,7 @@ class AppNavigator {
 
   static navigateChangePassword() async => await Get.toNamed(ROUTE_NAMES.CHANGE_PASSWORD);
 
-  static navigateInformationAccount() async => await Get.toNamed(ROUTE_NAMES.INFORMATION_ACCOUNT);
+  static navigateInformationAccount() async => await Get.offAllNamed(ROUTE_NAMES.INFORMATION_ACCOUNT);
 
   static navigateAccount() async => await Get.toNamed(ROUTE_NAMES.ACCOUNT);
 
@@ -44,7 +44,7 @@ class AppNavigator {
 
   static navigateHotline() async => await Get.toNamed(ROUTE_NAMES.HOTLINE);
 
-  static navigateChangeInformation() async => await Get.toNamed(ROUTE_NAMES.CHANGE_INFORMATION);
+  static navigateChangeInformation(int id) async => await Get.toNamed(ROUTE_NAMES.CHANGE_INFORMATION,arguments: id);
 
   static navigateChangeInformationAccount(arguments) async => await Get.toNamed(ROUTE_NAMES.CHANGE_INFORMATION_ACCOUNT, arguments: arguments);
 

@@ -2,31 +2,19 @@ import 'package:json_annotation/json_annotation.dart';
 part 'params_change_info.g.dart';
 @JsonSerializable()
 class ParamChangeInfo {
-  @JsonKey(name: "id")
-  int id;
-  @JsonKey(name: "user_code")
-  String userCode;
-  @JsonKey(name: "fullname")
-  String fullname;
-  @JsonKey(name: "imageBase64")
-  String? imageBase64;
-  String phone, email, gender, address;
+  String fullname, phone, email, date_or_birth;
 
   ParamChangeInfo({
-    required this.id,
-    required this.userCode,
-    required this.fullname,
-    this.imageBase64,
     required this.phone,
     required this.email,
-    required this.gender,
-    required this.address,
+    required this.fullname,
+    required this.date_or_birth,
   });
 
   factory ParamChangeInfo.fromJson(Map<String, dynamic> json) => _$ParamChangeInfoFromJson(json);
   Map<String, dynamic> toJson() => _$ParamChangeInfoToJson(this);
 
-  List<Object?> get props => [id, userCode, fullname, imageBase64, phone, email, gender, address];
+  List<Object?> get props => [fullname, phone, email,date_or_birth];
 }
 
 @JsonSerializable()

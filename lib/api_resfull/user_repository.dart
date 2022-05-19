@@ -5,14 +5,19 @@ import 'package:dio/dio.dart' show Dio; // ignore: import_of_legacy_library_into
 import 'package:mobifone/api_resfull/dio_provider.dart';
 import 'package:mobifone/src/src_index.dart';
 import 'package:mobifone/storages/share_local.dart';
+
+import '../src/models/model_generator/change_info.dart';
+import '../src/models/model_generator/list_data.dart';
+import '../src/models/model_generator/main_response.dart';
+import '../src/models/model_generator/register.dart';
+import '../src/models/model_generator/search.dart';
 enum AuthenticationStatus { unknown, authenticated, unauthenticated }
 
 class UserRepository {
   Dio dio = Dio();
   final _controller = StreamController<AuthenticationStatus>();
-  final _controllerUser = StreamController<InfoUser>();
+  final _controllerUser = StreamController<LoginResponse>();
   UserRepository(){
-    print('Token : ${shareLocal.getString(PreferencesKey.TOKEN)}');
     statusUser.listen((event) {
       if(event.token == dotenv.env[PreferencesKey.TOKEN]!){
         dio = DioProvider.instance();
@@ -38,6 +43,12 @@ class UserRepository {
 
   Future<CoursesResponse> getCourse() async => await RestClient(dio, baseUrl: dio.options.baseUrl).getCourse();
 
+  Future<MainResponse> getMainData() async => await RestClient(dio, baseUrl: dio.options.baseUrl).getMainData();
+
+  Future<DataListResponse> getListData() async => await RestClient(dio, baseUrl: dio.options.baseUrl).getListData();
+
+  Future<SearchResponse> getSearch(String search) async => await RestClient(dio, baseUrl: dio.options.baseUrl).getSearch(search);
+
   Future<DetailCoursesResponse> getDetailCourse(int id) async => await RestClient(dio, baseUrl: dio.options.baseUrl).getDetailCourse(id);
 
   //=========================================> POST <=========================================
@@ -45,11 +56,14 @@ class UserRepository {
   Future<LoginResponse> loginApp({required String email, required String password}) async =>
       await RestClient(dio, baseUrl: dio.options.baseUrl).loginApp(LoginAppRequest(email: email, password: password));
 
-  Future<ResponseStatus> registerApp({required String fullName, required String email, required String password}) async =>
-      await RestClient(dio, baseUrl: dio.options.baseUrl).registerApp(RegisterAppRequest(fullname: fullName ,email: email, password: password));
+  Future<RegisterResponse> registerApp({required String phone,required String passwordCF, required String email, required String password}) async =>
+      await RestClient(dio, baseUrl: dio.options.baseUrl).registerApp(RegisterAppRequest(phone: phone,passwordCF: passwordCF ,email: email, password: password));
 
   Future<ResponseStatus> changePassword({required ParamChangePassword paramChangePassword}) async =>
       await RestClient(dio, baseUrl: dio.options.baseUrl).changePassword(paramChangePassword);
+
+  Future<ChangeInfo> changeInfo({required String fullname,required String email,required String date_or_birth, required String phone}) async =>
+      await RestClient(dio, baseUrl: dio.options.baseUrl).changeInfo(ParamChangeInfo(phone: phone,fullname: fullname,date_or_birth: date_or_birth,email: email));
 
   Future<ResponseDataStatus> forgotPassword({required ParamForgotPassword paramForgotPassword}) async =>
       await RestClient(dio, baseUrl: dio.options.baseUrl).forgotPassword(paramForgotPassword);
@@ -76,13 +90,13 @@ class UserRepository {
     yield* _controller.stream;
   }
 
-  Stream<InfoUser> get statusUser async* {
+  Stream<LoginResponse> get statusUser async* {
     yield* _controllerUser.stream;
   }
 
   void logOut() => _controller.add(AuthenticationStatus.unauthenticated);
 
-  void addUser(InfoUser user) => _controllerUser.add(user);
+  void addUser(LoginResponse user) => _controllerUser.add(user);
 
   void dispose(){
     _controllerUser.close();

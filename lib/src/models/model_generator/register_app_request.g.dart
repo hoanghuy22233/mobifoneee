@@ -8,14 +8,16 @@ part of 'register_app_request.dart';
 
 RegisterAppRequest _$RegisterAppRequestFromJson(Map<String, dynamic> json) =>
     RegisterAppRequest(
-      fullname: json['fullname'] as String,
+      phone: json['phone'] as String,
+      passwordCF: json['password_confirmation'] as String,
       email: json['email'] as String,
       password: json['password'] as String,
     );
 
 Map<String, dynamic> _$RegisterAppRequestToJson(RegisterAppRequest instance) =>
     <String, dynamic>{
-      'fullname': instance.fullname,
+      'phone': instance.phone,
       'email': instance.email,
       'password': instance.password,
+      'password_confirmation': instance.passwordCF,
     };

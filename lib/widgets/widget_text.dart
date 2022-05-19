@@ -7,8 +7,9 @@ class WidgetText extends StatelessWidget {
   final TextStyle? style;
   final TextAlign? textAlign;
   final int? maxLine;
+  final TextOverflow? textOverflow;
 
-  WidgetText({this.title, this.style, this.textAlign, this.maxLine = 1});
+  WidgetText({this.title, this.style, this.textAlign, this.maxLine = 1,this.textOverflow});
 
   @override
   Widget build(BuildContext context) {
@@ -19,6 +20,7 @@ class WidgetText extends StatelessWidget {
         color: COLORS.WHITE,
         fontWeight: FontWeight.bold,
       ),
+      overflow: textOverflow,
       maxLines: maxLine,
     );
   }

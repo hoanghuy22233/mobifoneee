@@ -16,19 +16,23 @@ class _WidgetRegisterFormState extends State<WidgetRegisterForm> {
   final _fullNameFocusNode = FocusNode();
   final _emailFocusNode = FocusNode();
   final _passwordFocusNode = FocusNode();
-  final _forgotPasswordFocusNode = FocusNode();
+  final _confirmPassFocusNode =FocusNode();
   final _phoneFocusNode = FocusNode();
+
+  TextEditingController passController = TextEditingController();
+  TextEditingController confirmPassController = TextEditingController();
+
   bool obscurePassword = true;
-  bool obscureForgotPassword = true;
+  bool obscureConfirmPassword = true;
 
   @override
   void initState() {
     super.initState();
-    _fullNameFocusNode.addListener(() {
-      if (!_fullNameFocusNode.hasFocus) {
-        context.read<RegisterBloc>().add(FullNameRegisterUnfocused());
-      }
-    });
+    // _fullNameFocusNode.addListener(() {
+    //   if (!_fullNameFocusNode.hasFocus) {
+    //     context.read<RegisterBloc>().add(FullNameRegisterUnfocused());
+    //   }
+    // });
     _emailFocusNode.addListener(() {
       if (!_emailFocusNode.hasFocus) {
         context.read<RegisterBloc>().add(EmailRegisterUnfocused());
@@ -39,11 +43,11 @@ class _WidgetRegisterFormState extends State<WidgetRegisterForm> {
         context.read<RegisterBloc>().add(PhoneRegisterUnfocused());
       }
     });
-    // _fullNameFocusNode.addListener(() {
-    //   if (!_fullNameFocusNode.hasFocus) {
-    //     context.read<RegisterBloc>().add(ForgotPasswordRegisterUnfocused());
-    //   }
-    // });
+    _confirmPassFocusNode.addListener(() {
+      if (!_confirmPassFocusNode.hasFocus) {
+        context.read<RegisterBloc>().add(ConfirmPasswordRegisterUnfocused());
+      }
+    });
     _passwordFocusNode.addListener(() {
       if (!_passwordFocusNode.hasFocus) {
         context.read<RegisterBloc>().add(PasswordRegisterUnfocused());
@@ -57,6 +61,7 @@ class _WidgetRegisterFormState extends State<WidgetRegisterForm> {
     _fullNameFocusNode.dispose();
     _emailFocusNode.dispose();
     _passwordFocusNode.dispose();
+    _confirmPassFocusNode.dispose();
     super.dispose();
   }
 
@@ -73,8 +78,11 @@ class _WidgetRegisterFormState extends State<WidgetRegisterForm> {
             builder: (BuildContext context) {
               return WidgetDialog(
                 title: MESSAGES.NOTIFICATION,
-                content: MESSAGES.SUCCESS,
-                onTap1: ()=> AppNavigator.navigateLogout(),
+                content: state.message,
+                onTap1: (){
+                    print('sdfasdfaaaaaaaaaaa: ${state.email.value}');
+                    AppNavigator.navigateLogout();
+                }
               );
             },
           );
@@ -103,10 +111,6 @@ class _WidgetRegisterFormState extends State<WidgetRegisterForm> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(MESSAGES.FULL_NAME, style: AppStyle.DEFAULT_16_BOLD,),
-              AppValue.vSpaceTiny,
-              _buildTextFieldFullName(bloc),
-              AppValue.vSpaceSmall,
               Text(MESSAGES.EMAIL, style: AppStyle.DEFAULT_16_BOLD,),
               AppValue.vSpaceTiny,
               _buildTextFieldEmail(bloc),
@@ -115,14 +119,14 @@ class _WidgetRegisterFormState extends State<WidgetRegisterForm> {
               AppValue.vSpaceTiny,
               _buildTextFieldPassword(bloc),
               AppValue.vSpaceSmall,
-              Text(MESSAGES.FORGOT_PASSWORD, style: AppStyle.DEFAULT_16_BOLD,),
+              Text('Nhập lại mật khẩu', style: AppStyle.DEFAULT_16_BOLD,),
               AppValue.vSpaceTiny,
-              _buildTextFieldForgotPassword(bloc),
+              _buildTextFieldConfirmPassword(bloc),
               AppValue.vSpaceSmall,
               Text(MESSAGES.PHONE, style: AppStyle.DEFAULT_16_BOLD,),
               AppValue.vSpaceTiny,
               _buildTextFieldPhone(bloc),
-              AppValue.vSpaceLarge,
+              AppValue.vSpaceMedium,
               _buildButtonRegister(bloc),
             ],
           ),
@@ -130,44 +134,115 @@ class _WidgetRegisterFormState extends State<WidgetRegisterForm> {
       ),
     );
   }
+
+  String error = '';
   _buildButtonRegister(RegisterBloc bloc) {
     return BlocBuilder<RegisterBloc, RegisterState>(
         buildWhen: (previous, current) => previous.status != current.status,
         builder: (context, state) {
           return WidgetButton(
-            onTap: () => state.status.isValidated ? bloc.add(RegisterFormSubmitted()) : null,
-            // onTap: () {
-            //   ShowDialogCustom.showLoading();
-            // },
+            onTap: (){
+              print('tap 1');
+              if(passController.text == confirmPassController.text){
+                print('tap 2 ${state.email.invalid} ${state.phone.status} ${state.password.status} ${state.passwordCF.status}');
+
+                if(state.status.isValidated){
+                  bloc.add(RegisterFormSubmitted());
+                }
+                else{
+                  error = '';
+                  if(state.phone.valid == false) error = error + 'Tên tối thiểu 6 ký tự và không quá 60\n';
+                  if(state.email.valid == false) error = error + 'Sai định dạng email\n';
+                  if(state.password.valid == false) error = error + MESSAGES.PASSWORD_ERROR;
+                  showDialog(
+                    context: context,
+                    builder: (BuildContext context) {
+                      return WidgetDialog(
+                        title: MESSAGES.NOTIFICATION,
+                        content: error,
+                      );
+                    },
+                  );
+                }
+                // state.status.isValidated ? bloc.add(RegisterFormSubmitted(referralController.text)) : showDialog(
+                //   context: context,
+                //   builder: (BuildContext context) {
+                //     return WidgetDialog(
+                //       title: MESSAGES.NOTIFICATION,
+                //       content: MESSAGES.CHECK_INFOMATION,
+                //     );
+                //   },
+                // );
+              }
+              else{
+                showDialog(
+                  context: context,
+                  builder: (BuildContext context) {
+                    return WidgetDialog(
+                      title: MESSAGES.NOTIFICATION,
+                      content: MESSAGES.CHECK_COMFIRM_PASS,
+                    );
+                  },
+                );
+              }
+
+            },
+            //  onTap: () =>
+            //    AppNavigator.navigateVerifyRegister()
+            //  ,
             enable: state.status.isValidated,
             backgroundColor: COLORS.PRIMARY_COLOR,
-            text: MESSAGES.REGISTER,
+            text: MESSAGES.REGISTER.toUpperCase(),
           );
         }
     );
   }
 
+  String? errorPass;
   _buildTextFieldPassword(RegisterBloc bloc) {
     return BlocBuilder<RegisterBloc, RegisterState>(
         builder: (context, state) {
           return WidgetInput(
-            onChanged: (value) => bloc.add(PasswordRegisterChanged(password: value)),
-            errorText: state.password.invalid ? MESSAGES.PASSWORD_ERROR : null,
+            onChanged: (value) {
+              bloc.add(PasswordRegisterChanged(password: value));
+              // if(value.length < 4)
+              //   setState(() {
+              //     errorPass = 'Độ dài tối thiểu 8 ký tự';
+              //   });
+              // else
+                if(value.length > 60)
+                setState(() {
+                  errorPass = 'Độ dài tối đa 60 ký tự';
+                });
+              else if(value.contains(RegExp(r'[/\s]')) == true)
+                setState(() {
+                  errorPass = 'Mật khẩu không được chứa dấu cách';
+                });
+              else setState(() {
+                  errorPass = null;
+                });
+            },
+            errorText: errorPass,
             obscureText: obscurePassword,
             focusNode: _passwordFocusNode,
+            inputController: passController,
             boxDecoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(15),
-                border: Border.all(width: 1.5,color: Colors.grey)
+                border: Border.all(
+                  color: COLORS.GREY, //                   <--- border color
+                  width: 1.0,
+                ),
+                borderRadius: BorderRadius.circular(10),
+                color: COLORS.WHITE
             ),
             hint: MESSAGES.PASSWORD_HINT,
             endIcon: GestureDetector(
               onTap: () => setState(() => obscurePassword = !obscurePassword),
-              child: Icon(
-                obscurePassword
-                    ? CommunityMaterialIcons.eye_outline
-                    : CommunityMaterialIcons.eye_off_outline,
+              child: Image.asset(
+                !obscurePassword
+                    ? ICONS.HINT_ICON
+                    : ICONS.HINT_PASS,
                 color: COLORS.GREY,
-                size: 25,
+                height: 25,width: 25,
               ),
             ),
           );
@@ -175,27 +250,52 @@ class _WidgetRegisterFormState extends State<WidgetRegisterForm> {
     );
   }
 
-  _buildTextFieldForgotPassword(RegisterBloc bloc) {
+
+  String? errorConfirm;
+  _buildTextFieldConfirmPassword(RegisterBloc bloc) {
     return BlocBuilder<RegisterBloc, RegisterState>(
         builder: (context, state) {
           return WidgetInput(
-            onChanged: (value) => bloc.add(ForgotPasswordRegisterChanged(forgotPassword: value)),
-            errorText: state.password.invalid ? MESSAGES.PASSWORD_ERROR : null,
-            obscureText: obscureForgotPassword,
-            focusNode: _forgotPasswordFocusNode,
+            onChanged: (value) {
+              bloc.add(ConfirmPasswordRegisterChanged(passwordCF: value));
+              if(value.contains(RegExp(r'[/\s]')) == true)
+                setState(() {
+                  errorConfirm = 'Mật khẩu không được chứa dấu cách';
+                });
+              else
+              if(value != state.password.value){
+                setState(() {
+                  errorConfirm = 'Mật khẩu không trùng khớp';
+                });
+              }
+              else{
+                setState(() {
+                  errorConfirm = null;
+                });
+              }
+
+            },
+            errorText: errorConfirm,
+            obscureText: obscureConfirmPassword,
+            focusNode: _confirmPassFocusNode,
+            inputController: confirmPassController,
             boxDecoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(15),
-                border: Border.all(width: 1.5,color: Colors.grey)
+                border: Border.all(
+                  color: COLORS.GREY, //                   <--- border color
+                  width: 1.0,
+                ),
+                borderRadius: BorderRadius.circular(10),
+                color: COLORS.WHITE
             ),
-            hint: MESSAGES.PASSWORD_HINT,
+            hint: MESSAGES.CONFIRM_PASSWORD,
             endIcon: GestureDetector(
-              onTap: () => setState(() => obscureForgotPassword = !obscureForgotPassword),
-              child: Icon(
-                obscureForgotPassword
-                    ? CommunityMaterialIcons.eye_outline
-                    : CommunityMaterialIcons.eye_off_outline,
+              onTap: () => setState(() => obscureConfirmPassword = !obscureConfirmPassword),
+              child: Image.asset(
+                !obscureConfirmPassword
+                    ? ICONS.HINT_ICON
+                    : ICONS.HINT_PASS,
                 color: COLORS.GREY,
-                size: 25,
+                height: 25,width: 25,
               ),
             ),
           );
@@ -205,39 +305,44 @@ class _WidgetRegisterFormState extends State<WidgetRegisterForm> {
 
   _buildTextFieldEmail(RegisterBloc bloc) {
     return BlocBuilder<RegisterBloc, RegisterState>(
-      builder: (context, state) {
-        return WidgetInput(
-          onChanged: (value) => bloc.add(EmailRegisterChanged(email: value)),
-          inputType: TextInputType.emailAddress,
-          focusNode: _emailFocusNode,
-          boxDecoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(15),
-              border: Border.all(width: 1.5,color: Colors.grey)
-          ),
-          hint: MESSAGES.EMAIL_HINT,
-          errorText: state.email.invalid ? MESSAGES.EMAIL_ERROR : null,
-        );
-      }
+        builder: (context, state) {
+          return WidgetInput(
+            onChanged: (value) => bloc.add(EmailRegisterChanged(email: value)),
+            errorText: state.email.invalid ? MESSAGES.EMAIL_ERROR : null,
+            inputType: TextInputType.emailAddress,
+            focusNode: _emailFocusNode,
+            boxDecoration: BoxDecoration(
+                border: Border.all(
+                  color: COLORS.GREY, //                   <--- border color
+                  width: 1.0,
+                ),
+                borderRadius: BorderRadius.circular(10),
+                color: COLORS.WHITE
+            ),
+            hint: MESSAGES.EMAIL_HINT,
+            // errorText: state.email.invalid ? MESSAGES.EMAIL_ERROR : null,
+          );
+        }
     );
   }
 
-  _buildTextFieldFullName(RegisterBloc bloc) {
-    return BlocBuilder<RegisterBloc, RegisterState>(
-      builder: (context, state) {
-        return WidgetInput(
-          onChanged: (value) => bloc.add(FullNameRegisterChanged(fullName: value)),
-          inputType: TextInputType.text,
-          focusNode: _fullNameFocusNode,
-          boxDecoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(15),
-              border: Border.all(width: 1.5,color: Colors.grey)
-          ),
-          hint: MESSAGES.FULL_NAME_HINT,
-          errorText: state.fullName.invalid ? MESSAGES.WARNING_FULL_NAME : null,
-        );
-      }
-    );
-  }
+  // _buildTextFieldFullName(RegisterBloc bloc) {
+  //   return BlocBuilder<RegisterBloc, RegisterState>(
+  //     builder: (context, state) {
+  //       return WidgetInput(
+  //         onChanged: (value) => bloc.add(FullNameRegisterChanged(fullName: value)),
+  //         inputType: TextInputType.text,
+  //         focusNode: _fullNameFocusNode,
+  //         boxDecoration: BoxDecoration(
+  //             borderRadius: BorderRadius.circular(15),
+  //             border: Border.all(width: 1.5,color: Colors.grey)
+  //         ),
+  //         hint: MESSAGES.FULL_NAME_HINT,
+  //         errorText: state.fullName.invalid ? MESSAGES.WARNING_FULL_NAME : null,
+  //       );
+  //     }
+  //   );
+  // }
 
   _buildTextFieldPhone(RegisterBloc bloc) {
     return BlocBuilder<RegisterBloc, RegisterState>(

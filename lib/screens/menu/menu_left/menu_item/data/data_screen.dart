@@ -1,8 +1,18 @@
+import 'dart:developer';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:mobifone/bloc/list_data/list_data_bloc.dart';
 import 'package:mobifone/models/button_menu_model.dart';
+import 'package:mobifone/screens/menu/menu_left/menu_item/data/widget_data_list/dich_vu.dart';
+import 'package:mobifone/screens/menu/menu_left/menu_item/data/widget_data_list/goi_cuoc.dart';
+import 'package:mobifone/screens/menu/menu_left/menu_item/data/widget_data_list/goi_data.dart';
+import 'package:mobifone/src/models/model_generator/main_response.dart';
 import 'package:mobifone/src/src_index.dart';
 import 'package:mobifone/widgets/widgets.dart';
+
+import '../../../../../bloc/main/main_bloc.dart';
 
 class DataScreen extends StatefulWidget {
   const DataScreen({Key? key}) : super(key: key);
@@ -12,6 +22,12 @@ class DataScreen extends StatefulWidget {
 }
 
 class _DataScreenState extends State<DataScreen> {
+
+  @override
+  void initState() {
+    ListDataBloc.of(context).add(InitListDataEvent());
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -41,161 +57,30 @@ class _DataScreenState extends State<DataScreen> {
               labelColor: COLORS.PRIMARY_COLOR,
               unselectedLabelColor: COLORS.BLACK,
               labelStyle: AppStyle.DEFAULT_16,
-              tabs: [
+              tabs: const [
                 Tab(text: 'Gói Data',height: 35,),
                 Tab(text: 'Gói Cước',height: 35,),
                 Tab(text: 'Thuê bao',height: 35,),
               ],
 
             ),
-            body: Padding(
-              padding: EdgeInsets.only(top: 10),
-              child: TabBarView(
-                children: [
-                  Container(
-                    decoration: BoxDecoration(
-                        borderRadius: BorderRadius.only(
-                          topRight: Radius.circular(15), topLeft: Radius.circular(15)
-                        ),
-                      color: Colors.white
-                    ),
-                    padding: EdgeInsets.only(left: 15,right: 15,top: 15),
-                    child: ListView.separated(
-                        itemBuilder: (context, index) {
-                          return Container(
-                            height: 100,
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    Text('Gói Data ngày D5',style: AppStyle.DEFAULT_16_BOLD,),
-                                    Text('Data: 1GB'),
-                                    Text('Hạn sử dụng: 1 ngày'),
-                                    Text('10.000đ',style: AppStyle.DEFAULT_16.copyWith(color: COLORS.PRIMARY_COLOR),),
-                                  ],
-                                ),
-                                WidgetButton(
-                                    onTap: (){
-                                      AppNavigator.navigateDetailData();
-                                    },
-                                  width: 100,height: 40,
-                                  text: MESSAGES.REGISTER,textColor: COLORS.PRIMARY_COLOR,
-                                  boxDecoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(15),
-                                    border: Border.all(width: 1.1,color: COLORS.PRIMARY_COLOR)
-                                  ),
-                                )
-                              ],
-                            ),
-                          );
-                        },
-                        separatorBuilder: (context, index){return WidgetLine();},
-                        itemCount: 8),
-                  ),
-                  Container(
-                    decoration: BoxDecoration(
-                        borderRadius: BorderRadius.only(
-                            topRight: Radius.circular(15), topLeft: Radius.circular(15)
-                        ),
-                        color: Colors.white
-                    ),
-                    padding: EdgeInsets.only(left: 15,right: 15,top: 15),
-                    child: ListView.separated(
-                        itemBuilder: (context, index) {
-                          return Container(
-                            height: 100,
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    Text('Gói Data ngày D5',style: AppStyle.DEFAULT_16_BOLD,),
-                                    Text('Data: 1GB'),
-                                    Text('Hạn sử dụng: 1 ngày'),
-                                    Text('10.000đ',style: AppStyle.DEFAULT_16.copyWith(color: COLORS.PRIMARY_COLOR),),
-                                  ],
-                                ),
-                                WidgetButton(
-                                  onTap: (){
-                                    AppNavigator.navigateDetailData();
-                                  },
-                                  width: 100,height: 40,
-                                  text: MESSAGES.REGISTER,textColor: COLORS.PRIMARY_COLOR,
-                                  boxDecoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(15),
-                                      border: Border.all(width: 1.1,color: COLORS.PRIMARY_COLOR)
-                                  ),
-                                )
-                              ],
-                            ),
-                          );
-                        },
-                        separatorBuilder: (context, index){return WidgetLine();},
-                        itemCount: 8),
-                  ),
-                  Container(
-                    decoration: BoxDecoration(
-                        borderRadius: BorderRadius.only(
-                            topRight: Radius.circular(15), topLeft: Radius.circular(15)
-                        ),
-                        color: Colors.white
-                    ),
-                    padding: EdgeInsets.only(left: 15,right: 15,top: 15),
-                    child: ListView.separated(
-                        itemBuilder: (context, index) {
-                          return Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text('Gói Data ngày D5',style: AppStyle.DEFAULT_16_BOLD,),
-                              SizedBox(height: 5,),
-                              GestureDetector(
-                                onTap: (){
-                                  showDialog(
-                                    context: context,
-                                    // barrierDismissible: false,
-                                    builder: (BuildContext context) {
-                                      return WidgetDialogFake(
-                                        title: 'MobiQ',titleStyle: AppStyle.DEFAULT_16_BOLD.copyWith(color: COLORS.PRIMARY_COLOR),
-                                        content: Column(
-                                          crossAxisAlignment: CrossAxisAlignment.start,
-                                          children: [
-                                            Text('Lợi ích',style: AppStyle.DEFAULT_16_BOLD.copyWith(color: COLORS.PRIMARY_COLOR),),
-                                            Text('Cước SMS thấp: 200 đồng/SMS nội mạng, 250 đồng/SMS liên mạng',style: AppStyle.DEFAULT_14,),
-                                            AppValue.vSpaceTiny,
-                                            Text('Giá cước',style: AppStyle.DEFAULT_16_BOLD.copyWith(color: COLORS.PRIMARY_COLOR),),
-                                            Text('Cước thoại: Nội mạng: 1.580 đồng/phút Liên mạng: 1.780 đồng/phút.',style: AppStyle.DEFAULT_14,),
-                                            AppValue.vSpaceTiny,
-                                            Text('Đăng kí gói cước',style: AppStyle.DEFAULT_16_BOLD.copyWith(color: COLORS.PRIMARY_COLOR),),
-                                            Text('Đăng ký gói cước: tại cửa hàng, đại lý, các điểm phân phối chính thức của MobiFone toàn quốc. ',
-                                              style: AppStyle.DEFAULT_14,),
-                                          ],
-                                        ),
-                                        textButton1: 'Trở về',
-                                        onTap1: () {
-                                          AppNavigator.navigateBack();
-                                        },
-                                      );
-                                    },
-                                  );
-                                },
-                                child: ClipRRect(
-                                  borderRadius: BorderRadius.circular(10),
-                                  child: Image.asset('assets/images/img-2.png',height: 150,width: AppValue.widths,fit: BoxFit.fill,),
-                                ),
-                              ),
-                            ],
-                          );
-                        },
-                        separatorBuilder: (context, index){return Padding(padding: EdgeInsets.symmetric(vertical: 12),child: WidgetLine());},
-                        itemCount: 8),
-                  ),
-                ],
-              ),
+            body: BlocBuilder<ListDataBloc,ListDataState>(
+                    builder: (context, state) {
+            if (state is UpdateListDataState) {
+              return Padding(
+                padding: EdgeInsets.only(top: 10),
+                child: TabBarView(
+                  children: [
+                    Data(),
+                    Postage(),
+                    ServiceWidget(),
+                  ],
+                ),
+              );
+            } else {
+              return Container();
+            }
+                    }
             ),
           ),
         ),

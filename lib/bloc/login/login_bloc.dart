@@ -61,7 +61,6 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
           yield state.copyWith(status: FormzStatus.submissionInProgress);
           var response = await userRepository.loginApp(email: state.email.value, password: state.password.value);
           if (response.status == BASE_URL.SUCCESS_200) {
-            print('aaaaa');
             await localRepository.saveUser(jsonEncode(response));
             await shareLocal.putString(PreferencesKey.TOKEN, response.token!);
             await shareLocal.putBools(PreferencesKey.FIRST_TIME, true);
